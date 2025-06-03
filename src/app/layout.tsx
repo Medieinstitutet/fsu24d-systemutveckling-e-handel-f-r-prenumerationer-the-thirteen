@@ -1,4 +1,6 @@
-import SessionProviderWrapper from "./components/SessionProviderWrapper";
+import SessionProviderWrapper from "../components/SessionProviderWrapper";
+import './globals.css';
+
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
