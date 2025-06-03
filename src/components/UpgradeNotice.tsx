@@ -1,13 +1,15 @@
+type AccessLevel = 'free' | 'basic' | 'pro' | 'premium';
 
-export default function UpgradeNotice() {
+export default function UpgradeNotice({ userLevel }: {userLevel: AccessLevel}) {
+    const text = userLevel === 'free'
+    ? 'Välj ett abonnemang för att låsa upp fler artiklar'
+    : 'Du saknar rätt nivå för att läsa allt innehåll. Uppgradera här'; 
+
     return (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-xl">
-            <p>
-                Du saknar rätt nivå.{" "}
-                <a href="/subscriptions" className="underline font-medium hover:text-yellow-800">
-                Uppgradera här
-                </a>
-            </p>
+            <p>{text}{' '} 
+            <a href="/subcriptions" className="underline"></a></p>
         </div>
     )
 }
+

@@ -1,9 +1,10 @@
-export type AccessLevel = 'basic' | 'pro' | 'premium';
+export type AccessLevel = 'free' | 'basic' | 'pro' | 'premium';
 
 export const ACCESS_ORDER: Record<AccessLevel, number> = {
-    basic: 0, 
-    pro: 1,
-    premium: 2,
+    free: 0,
+    basic: 1, 
+    pro: 2,
+    premium: 3,
 };
 
 export function hasAccess(
