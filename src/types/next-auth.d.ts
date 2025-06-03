@@ -3,7 +3,7 @@ import NextAuth from "next-auth";
 declare module "next-auth" {
   interface User {
     id: string;
-    subscriptionLevel: "Explorer" | "Odyssey" | "Mastermind";
+    subscriptionLevel: "free" | "basic" | "pro" | "premium";
   }
 
   interface Session {
@@ -14,6 +14,6 @@ declare module "next-auth" {
 declare module "next-auth/jwt" {
     interface JWT {
     id: string;
-    subscriptionLevel: "Explorer" | "Odyssey" | "Mastermind";
+    subscriptionLevel: "free" | "basic" | "pro" | "premium";
   }
 }

@@ -1,6 +1,6 @@
 
-import ArticleCard from '@/app/components/ArticleCard'; 
-import UpgradeNotice from '@/app/components/UpgradeNotice'; 
+import ArticleCard from '@/components/ArticleCard'; 
+import UpgradeNotice from '@/components/UpgradeNotice'; 
 import { hasAccess } from '@/types/access';
 import { AccessLevel } from '@/types/access';
 import { getUserLevel } from '@/lib/getUserLevel';

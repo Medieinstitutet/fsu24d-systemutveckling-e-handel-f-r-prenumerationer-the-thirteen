@@ -1,6 +1,6 @@
 'use client';
 import { signIn, signOut } from "next-auth/react";
-import "../globals.css";
+
 import { useRouter } from "next/router";
 import { ChangeEvent, FormEvent, useState } from "react";
 
