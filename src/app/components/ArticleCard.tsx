@@ -1,5 +1,5 @@
-import { hasAccess } from '@/types/access';
 import type { AccessLevel } from '@/types/access';
+import { hasAccess } from '@/types/access';
 
 type Props = {
     title: string; 
@@ -23,7 +23,7 @@ export default function ArticleCard({
             {allowed ? (
                 <p>{body}</p>
             ) : (
-                <p className="italix text-gray-500">
+                <p className="italic text-gray-500">
                     Innehållet kräver {articleLevel.toUpperCase()}-nivå.
                 </p>
             )}
