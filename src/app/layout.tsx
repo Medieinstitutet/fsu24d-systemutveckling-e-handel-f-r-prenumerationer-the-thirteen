@@ -1,10 +1,5 @@
 import SessionProviderWrapper from "../components/SessionProviderWrapper";
-<<<<<<< HEAD
 import "./globals.css";
-=======
-import './globals.css';
-
->>>>>>> main
 
 export default function RootLayout({
   children,
