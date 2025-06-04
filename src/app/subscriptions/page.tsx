@@ -36,6 +36,7 @@ const levels = [
 
 const SubscriptionCards = () => {
   const { data: session } = useSession();
+  console.log("SESSION", session);
 
   const handleSubscribe = async (level: string) => {
     if (!session?.user?.email) return alert("Du måste vara inloggad");
