@@ -1,11 +1,11 @@
 'use client';
 import { ChangeEvent, FormEvent, useState } from 'react';
-import '../globals.css';
+
 import axios from "axios";
 
 const RegisterPage = () => {
 
-  const [form, setForm] = useState({email: "", password: "", subscriptionLevel: "Explorer"});
+  const [form, setForm] = useState({email: "", password: "", subscriptionLevel: "free"});
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
@@ -36,9 +36,10 @@ const RegisterPage = () => {
       <label>Subscription Level</label>
       <br/>
       <select name="subscriptionLevel" value={form.subscriptionLevel} onChange={handleChange}>
-        <option value="Explorer">Explorer</option>
-        <option value="Odyssey">Odyssey</option>
-        <option value="Mastermind">Mastermind</option>
+        <option value="free">free</option>
+        <option value="basic">basic</option>
+        <option value="pro">pro</option>
+        <option value="premium">premium</option>
       </select>
       <br/>
       <button type="submit" className='w-40 bg-blue-600 text-white rounded'>Register</button>

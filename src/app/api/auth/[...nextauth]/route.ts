@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id as string;
-        session.user.subscriptionLevel = token.subscriptionLevel as "Explorer" | "Odyssey" | "Mastermind";
+        session.user.subscriptionLevel = token.subscriptionLevel as "free" | "basic" | "pro" | "premium";
       }
       return session;
     }
