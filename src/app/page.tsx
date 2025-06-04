@@ -42,6 +42,7 @@ export default async function Home() {
         {articles.map((a) => (
           <ArticleCard
           key={a._id}
+          _id={a._id}
           title={a.title}
           body={a.body}
           articleLevel={a.accessLevel}
