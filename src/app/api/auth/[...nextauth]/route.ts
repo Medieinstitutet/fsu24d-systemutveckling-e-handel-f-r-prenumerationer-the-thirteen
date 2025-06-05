@@ -26,7 +26,8 @@ export const authOptions: NextAuthOptions = {
       return {
         id: user._id.toString(),
         email: user.email,
-        subscriptionLevel: user.subscriptionLevel
+        subscriptionLevel: user.subscriptionLevel,
+        role: user.role
       }
     }
     })
@@ -41,6 +42,7 @@ export const authOptions: NextAuthOptions = {
       if (user) {
         token.id = user.id;
         token.subscriptionLevel = user.subscriptionLevel;
+        token.role = user.role;
       }
       return token;
     },
@@ -49,6 +51,7 @@ export const authOptions: NextAuthOptions = {
       if (token) {
         session.user.id = token.id as string;
         session.user.subscriptionLevel = token.subscriptionLevel as "free" | "basic" | "pro" | "premium";
+        session.user.role = token.role as "customer" | "admin";
       }
       return session;
     }
