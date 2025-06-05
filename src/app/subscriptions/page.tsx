@@ -2,6 +2,9 @@
 
 import { useSession } from "next-auth/react";
 import { startSubscription } from "@/services/stripe-service";
+
+import { levels } from "@/lib/data";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -11,28 +14,6 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-
-const levels = [
-  {
-    title: "Explorer",
-    description: "Perfekt för nyfikna läsare",
-    perks: ["5 artiklar per vecka", "Nyhetsbrev", "Ingen reklam"],
-  },
-  {
-    title: "Odyssey",
-    description: "För dig som vill ha mer",
-    perks: ["Allt i Explorer", "Obegränsat läsande", "Community-access"],
-  },
-  {
-    title: "Mastermind",
-    description: "Maximalt innehåll och exklusiv access",
-    perks: [
-      "Allt i Odyssey",
-      "Exklusiva artiklar",
-      "1:1 chattar med författare",
-    ],
-  },
-];
 
 const SubscriptionCards = () => {
   const { data: session } = useSession();
