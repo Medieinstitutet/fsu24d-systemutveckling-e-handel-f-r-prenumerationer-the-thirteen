@@ -13,4 +13,38 @@ export async function GET(req: NextRequest) {
     const articles = await Content.find(query).lean(); 
 
     return NextResponse.json(articles); 
-}
+};
+
+export async function POST(req: NextRequest) {
+    await connectDB();
+
+    const articleBody = await req.json();
+    const { title, body, accessLevel } = articleBody;
+
+    if (!title || !body || !accessLevel) {
+        return NextResponse.json(
+            { message: 'Missing required properties.'},
+            { status: 400 }
+        );
+    };
+
+    try {
+        const newArticle = await Content.create({
+            title,
+            body,
+            accessLevel
+        });
+
+        return NextResponse.json(
+            { message: "Article created:", article: newArticle },
+            { status: 201 }
+        );
+
+    } catch (error) {
+        console.error("Error creating article", error)
+        return NextResponse.json(
+            { message: "Server error", error },
+            { status: 500 }
+        );
+    };
+};
