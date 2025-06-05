@@ -4,6 +4,7 @@ declare module "next-auth" {
   interface User {
     id: string;
     subscriptionLevel: "free" | "basic" | "pro" | "premium";
+    role: "admin" | "customer";
   }
 
   interface Session {
@@ -15,5 +16,6 @@ declare module "next-auth/jwt" {
     interface JWT {
     id: string;
     subscriptionLevel: "free" | "basic" | "pro" | "premium";
+    role: "admin" | "customer";
   }
 }
