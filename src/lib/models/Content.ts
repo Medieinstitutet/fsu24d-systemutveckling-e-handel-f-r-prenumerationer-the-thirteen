@@ -4,7 +4,8 @@ import type { AccessLevel } from '@/types/access';
 export interface IContent {
     title: string; 
     body: string; 
-    accessLevel: AccessLevel; 
+    accessLevel: AccessLevel;
+    imageUrl: string; 
     createdAt: Date; 
 }
 
@@ -15,7 +16,8 @@ const ContentSchema = new Schema<IContent>({
         type: String, 
         enum: ['basic', 'pro', 'premium'], 
         default: 'basic',
-    }, 
+    },
+    imageUrl: { type: String, required: false},
     createdAt: { type: Date, default: Date.now }, 
 }); 
 

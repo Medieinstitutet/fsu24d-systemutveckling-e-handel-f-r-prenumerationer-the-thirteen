@@ -7,7 +7,7 @@ export const AdminPage = () => {
 
   const { data: session, status } = useSession();
 
-  const [form, setForm] = useState({title: "", body: "", accessLevel: "free"});
+  const [form, setForm] = useState({title: "", body: "", imageUrl: "", accessLevel: "free"});
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
@@ -30,6 +30,8 @@ export const AdminPage = () => {
       <input type="text" className="border w-[80%]" name="title" onChange={handleChange}/>
       <label>Body</label>
       <textarea className="border w-full h-40 resize-none" name="body" onChange={handleChange}></textarea>
+      <label>Image</label>
+      <input type="text" className="border" name="imageUrl" onChange={handleChange} />
       <label>Subscription tier</label>
       <select className="border w-[20%] p-1" name="accessLevel" onChange={handleChange}>
         <option value={"free"}>Free</option>

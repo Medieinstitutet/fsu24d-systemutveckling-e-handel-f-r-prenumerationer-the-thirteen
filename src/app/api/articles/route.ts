@@ -19,7 +19,7 @@ export async function POST(req: NextRequest) {
     await connectDB();
 
     const articleBody = await req.json();
-    const { title, body, accessLevel } = articleBody;
+    const { title, body, imageUrl, accessLevel } = articleBody;
 
     if (!title || !body || !accessLevel) {
         return NextResponse.json(
@@ -32,6 +32,7 @@ export async function POST(req: NextRequest) {
         const newArticle = await Content.create({
             title,
             body,
+            imageUrl,
             accessLevel
         });
 
