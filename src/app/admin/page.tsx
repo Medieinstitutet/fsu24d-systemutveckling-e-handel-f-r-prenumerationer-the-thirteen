@@ -1,13 +1,13 @@
 'use client';
 import axios from "axios";
-import { useSession } from "next-auth/react";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { signOut, useSession } from "next-auth/react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 export const AdminPage = () => {
 
   const { data: session, status } = useSession();
+
   const [form, setForm] = useState({title: "", body: "", accessLevel: "free"});
-  console.log(form);
 
   const handleChange = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
@@ -39,6 +39,7 @@ export const AdminPage = () => {
       </select>
       <button type="submit" className="border w-[30%] m-auto mt-10">Post</button>
     </form>
+    <button onClick={() => signOut()}>Sign out</button>
   </div>
   </>
 }
