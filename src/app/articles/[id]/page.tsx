@@ -31,10 +31,20 @@ export default async function ArticlePage({
     const allowed = hasAccess(userLevel, article.accessLevel);
 
     return (
-        <main className="max-w-2xl mx-auto space-y-6 py-8">
+        <main className="mx-auto max-w-3xl lg:max-w-4xl px-4 lg:px-0 py-10 space-y-8">
+
+            <header className="space-y-3 text-center">
             <h1 className="text-3xl font-bold">{article.title}</h1>
+            </header>
 
             {!allowed && <UpgradeNotice userLevel={userLevel} />}
+
+            <article className={`
+            prose prose-neutral 
+            lg:prose-lg
+            max-w-none 
+            ${!allowed && `blur-sm select none`}
+            `}>
 
 
             {allowed ? (
@@ -45,6 +55,7 @@ export default async function ArticlePage({
                     </p>
                 
             )}
+            </article>
         </main>
     )
 }

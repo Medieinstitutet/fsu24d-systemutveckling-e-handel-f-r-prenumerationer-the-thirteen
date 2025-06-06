@@ -1,9 +1,12 @@
-
 import ArticleCard from '@/components/ArticleCard'; 
 import UpgradeNotice from '@/components/UpgradeNotice'; 
 import { hasAccess } from '@/types/access';
 import { AccessLevel } from '@/types/access';
 import { getUserLevel } from '@/lib/getUserLevel';
+
+
+
+
 
 const ACCESS_ORDER: Record<AccessLevel, number> = {
   free: 0,
@@ -44,8 +47,11 @@ export default async function Home() {
   ); 
 
   return (
+
     <main className="max-w-2xl mx-auto space-y-6 py-8">
       <h1 className="text-3xl font-bold">D13 Nyhetsbrev</h1>
+      
+      
 
       <span 
       className={`
