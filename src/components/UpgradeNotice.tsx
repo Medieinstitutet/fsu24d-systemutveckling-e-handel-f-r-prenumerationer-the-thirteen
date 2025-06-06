@@ -8,7 +8,7 @@ export default function UpgradeNotice({ userLevel }: {userLevel: AccessLevel}) {
     return (
         <div className="bg-yellow-100 border-l-4 border-yellow-500 p-4 rounded-xl">
             <p>{text}{' '} 
-            <a href="/subcriptions" className="underline">
+            <a href="/subscriptions" className="underline">
             Uppgradera här</a></p>
         </div>
     )
