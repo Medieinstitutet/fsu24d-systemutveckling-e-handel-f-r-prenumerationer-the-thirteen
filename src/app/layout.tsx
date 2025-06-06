@@ -28,7 +28,7 @@ const badgeClass = {
           <header className="sticky top-0 z-30 bg-white border-b">
             <nav className="max-w-7xl mx-auto flex items-center justify-between p-4">
               <Link href="/" className="text-lg font-bold">
-              D13 Nyhetsbrev
+              <p>D13 Nyhetsbrev</p>
               </Link>
               <div className="flex items-center gap-4 text-sm">
                 <span className={`rounded-full px-3 py-1 text-xs ${badgeClass}`}>
@@ -37,7 +37,7 @@ const badgeClass = {
 
                 {userLevel !== 'premium' && (
                   <Link href="/subscriptions" className="rounded bg-blue-600 px-3 py-1 text-white hover:bg-blue-700">
-                    Uppgradera
+                    <p>Uppgradera</p>
                   </Link>
                 )}
                 <LogoutButton />
@@ -45,8 +45,8 @@ const badgeClass = {
             </nav>
           </header>
           {children}
-        </SessionProviderWrapper>
-      </body>
-    </html>
-  );
+            </SessionProviderWrapper>
+          </body>
+        </html>
+  ); 
 }
