@@ -4,12 +4,18 @@ import LogoutButton from "@/components/LogoutButton";
 import { getUserLevel } from "@/lib/getUserLevel";
 import { AccessLevel } from "@/types/access";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
 
 
-const userLevel = await getUserLevel(); 
+  const session = await getServerSession(authOptions);
+  const loggedIn = !!session; 
+
+
+const userLevel = session?.user.subscriptionLevel ?? (await getUserLevel()); 
 
 const badgeClass = {
   free: 'bg-green-100 text-green-800',
@@ -40,7 +46,14 @@ const badgeClass = {
                     <p>Uppgradera</p>
                   </Link>
                 )}
+                {loggedIn ? (
                 <LogoutButton />
+                ) : (
+                  <Link href="/login" className="underline text-gray-600 hover:text-black">
+                    <p>Logga in</p>
+                  </Link>
+                )}
+                
               </div>
             </nav>
           </header>
