@@ -36,8 +36,8 @@ const badgeClass = {
                 </span>
 
                 {userLevel !== 'premium' && (
-                  <Link href="/subscriptions" className="rounded bg-blue-600 px-3 py-1 text-white hover:bg-blue-700">
-                    <p>Uppgradera</p>
+                  <Link href="/subscriptions" className="rounded bg-blue-600 px-3 py-1 hover:bg-blue-700">
+                    <p className="text-white">Uppgradera</p>
                   </Link>
                 )}
                 <LogoutButton />

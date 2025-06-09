@@ -426,7 +426,5 @@
   [class*="border"] {
     @apply border-border;
   }
-  p {
-    @apply text-muted-foreground;
-  }
+ 
 }
