@@ -3,19 +3,11 @@
 import { useSession } from "next-auth/react";
 import { startSubscription } from "@/services/stripe-service";
 
-import { levels } from "@/lib/data";
+import { subscriptionLevels } from "@/lib/data";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import SubscriptionCard from "@/components/SubscriptionCard";
 
-const SubscriptionCards = () => {
+export default function SubscriptionCards() {
   const { data: session } = useSession();
   console.log("SESSION", session);
 
@@ -28,26 +20,16 @@ const SubscriptionCards = () => {
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10">
-      {levels.map(({ title, description, perks }) => (
-        <Card key={title} className="flex flex-col justify-between">
-          <CardHeader>
-            <CardTitle>{title}</CardTitle>
-            <CardDescription>{description}</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-1 text-sm">
-              {perks.map((perk) => (
-                <li key={perk}>✅ {perk}</li>
-              ))}
-            </ul>
-          </CardContent>
-          <CardFooter>
-            <Button onClick={() => handleSubscribe(title)}>Prenumerera</Button>
-          </CardFooter>
-        </Card>
+      {subscriptionLevels.map(({ title, description, perks, image }) => (
+        <SubscriptionCard
+          key={title}
+          image={image}
+          title={title}
+          description={description}
+          perks={perks}
+          onClick={() => handleSubscribe(title)}
+        />
       ))}
     </div>
   );
-};
-
-export default SubscriptionCards;
+}
