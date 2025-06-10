@@ -25,8 +25,6 @@ const badgeClass = {
 }[userLevel as AccessLevel]
 
 
-
-
   return (
     <html lang="en">
       <body>
@@ -42,18 +40,39 @@ const badgeClass = {
                 </span>
 
                 {userLevel !== 'premium' && (
-                  <Link href="/subscriptions" className="rounded bg-blue-600 px-3 py-1 text-white hover:bg-blue-700">
-                    <p>Uppgradera</p>
-                  </Link>
-                )}
-                {loggedIn ? (
-                <LogoutButton />
-                ) : (
-                  <Link href="/login" className="underline text-gray-600 hover:text-black">
-                    <p>Logga in</p>
+                  <Link href="/subscriptions" className="rounded bg-blue-600 px-3 py-1 hover:bg-blue-700">
+                    <p className="text-white">Uppgradera</p>
                   </Link>
                 )}
                 
+                
+                <div className="relative group">
+                  <button className="flex items-center gap-1 px-3 py-1 rounded hover:bg-gray-100">
+                    <span>Profil</span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-4 h-4">
+                      <path d="m6 9 6 6 6-6"/>
+                    </svg>
+                  </button>
+                  
+                  <div className="absolute right-0 hidden pt-2 group-hover:block z-40">
+                    <div className="bg-white shadow-lg rounded border py-1 w-40">
+                      <Link href="/account" className="block px-4 py-2 hover:bg-gray-100">
+                        Mitt konto
+                      </Link>
+                      <div className="px-4 py-2 hover:bg-gray-100">
+                        
+                        {loggedIn ? (
+                       <LogoutButton />
+                       ) : (
+                    <Link href="/login" className="underline text-gray-600 hover:text-black">
+                    <p>Logga in</p>
+                   </Link>
+                  )}
+                
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </nav>
           </header>
