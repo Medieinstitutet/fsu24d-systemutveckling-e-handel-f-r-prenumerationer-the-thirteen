@@ -3,30 +3,43 @@ import { ChangeEvent, FormEvent, useState } from "react";
 
 import axios from "axios";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const RegisterPage = () => {
-  const [form, setForm] = useState({
-    email: "",
-    password: "",
-    subscriptionLevel: "free",
-  });
+  const [form, setForm] = useState({email: "", password: "", subscriptionLevel: "free"});
+  const [error, setError] = useState<string>("");
+  const router = useRouter();
 
-  console.log(form);
-
-  const handleChange = (
-    e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
+    setError("");
   };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     try {
-      const res = await axios.post("/api/register", form);
-      console.log("User registered:", res.data);
-    } catch (error) {
-      console.error("Registration error:", error);
+      await axios.post("/api/register", form);
+      const response = await signIn("credentials", {
+        redirect: false,
+        email: form.email,
+        password: form.password
+      })
+
+      if (response?.ok) {
+        router.push("/");
+      } else {
+        setError("Login failed after registration.");
+      }
+      setError("");
+    } catch (error: any) {
+      const errorMessage = error?.response?.data?.error;
+      if (errorMessage === "User already exists") {
+        setError("User already exists.");
+      } else {
+        setError("Registration failed. Please try again.");
+      }
     }
   };
 
@@ -54,6 +67,7 @@ const RegisterPage = () => {
           <option value="premium" className="font-bold">Premium</option>
         </select>
       </div>
+      {error && <p className="text-white italic">{error}</p>}
 
       <Link href="/login" className="text-white font-bold">Have an account already?</Link>
       <button className="border border-white w-[80%] rounded-xl text-black bg-white font-bold text-xl p-1">Get started!</button>
