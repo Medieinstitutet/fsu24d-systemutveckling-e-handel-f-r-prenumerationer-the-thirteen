@@ -2,6 +2,7 @@
 import { ChangeEvent, FormEvent, useState } from "react";
 
 import axios from "axios";
+import Link from "next/link";
 
 const RegisterPage = () => {
   const [form, setForm] = useState({
@@ -9,6 +10,8 @@ const RegisterPage = () => {
     password: "",
     subscriptionLevel: "free",
   });
+
+  console.log(form);
 
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -27,44 +30,36 @@ const RegisterPage = () => {
     }
   };
 
-  return (
-    <>
-      <div className="max-w-md mx-auto mt-10 p-6 border rounded-xl shadow">
-        <h3 className="font-bold mb-4 text-2xl">Register</h3>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          <label>Email</label>
-          <br />
-          <input type="email" name="email" required onChange={handleChange} />
-          <br />
-          <label>Password</label>
-          <br />
-          <input
-            type="password"
-            name="password"
-            required
-            onChange={handleChange}
-          />
-          <br />
-          <label>Subscription Level</label>
-          <br />
-          <select
-            name="subscriptionLevel"
-            value={form.subscriptionLevel}
-            onChange={handleChange}
-          >
-            <option value="free">free</option>
-            <option value="basic">basic</option>
-            <option value="pro">pro</option>
-            <option value="premium">premium</option>
-          </select>
-          <br />
-          <button type="submit" className="w-40 bg-blue-600 text-white rounded">
-            Register
-          </button>
-        </form>
+  return <>
+    <div className="w-[30rem] m-auto bg-black rounded-xl shadow-xl p-15 mt-20">
+    <form className="w-[100%] m-auto flex flex-col gap-10 items-center" onSubmit={handleSubmit}>
+      <div className="w-[100%] flex flex-col">
+        <label className="text-white font-bold">Email</label>
+        <br />
+        <input type="email" name="email" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
       </div>
-    </>
-  );
+
+      <div className="w-[100%] flex flex-col">
+        <label className="text-white font-bold">Password</label>
+        <br />
+        <input type="password" name="password" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
+      </div>
+
+      <div className="w-[100%] flex flex-col">
+        <label className="text-white font-bold">Subscription tier</label>
+        <select name="subscriptionLevel" className="bg-white p-2 font-bold" onChange={handleChange}>
+          <option value="free" className="font-bold">Free</option>
+          <option value="basic" className="font-bold">Basic</option>
+          <option value="pro" className="font-bold">Pro</option>
+          <option value="premium" className="font-bold">Premium</option>
+        </select>
+      </div>
+
+      <Link href="/login" className="text-white font-bold">Have an account already?</Link>
+      <button className="border border-white w-[80%] rounded-xl text-black bg-white font-bold text-xl p-1">Get started!</button>
+    </form>
+  </div>
+  </>
 };
 
 export default RegisterPage;

@@ -1,12 +1,14 @@
 'use client';
-import { signIn, signOut } from "next-auth/react";
+import { signIn } from "next-auth/react";
+import Link from "next/link";
 
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, FormEvent, useState } from "react";
 
 const LoginPage = () => {
 
   const [form, setForm] = useState({email: "", password: ""});
+  const router = useRouter();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
@@ -20,39 +22,29 @@ const LoginPage = () => {
     });
 
     if (res?.ok) {
-      alert("Yippie");
+      router.push("/");
     } else {
       alert("Failed")
     }
   }
 
   return <>
-  <div>
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <input
-        name="email"
-        type="email"
-        placeholder="Email"
-        value={form.email}
-        onChange={handleChange}
-        required
-        className="w-full p-2 border rounded"
-      />
-      <input
-        name="password"
-        type="password"
-        placeholder="Password"
-        value={form.password}
-        onChange={handleChange}
-        required
-        className="w-full p-2 border rounded"
-      />
-      <button
-        type="submit"
-        className="w-full p-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        Login
-      </button>
+  <div className="w-[30rem] m-auto bg-black rounded-xl shadow-xl p-15 mt-20">
+    <form className="w-[100%] m-auto flex flex-col gap-10 items-center" onSubmit={handleSubmit}>
+      <div className="w-[100%] flex flex-col">
+        <label className="text-white font-bold">Email</label>
+        <br />
+        <input type="email" name="email" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
+      </div>
+
+      <div className="w-[100%] flex flex-col">
+        <label className="text-white font-bold">Password</label>
+        <br />
+        <input type="password" name="password" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
+      </div>
+
+      <Link href="/register" className="text-white font-bold">Don't have an account?</Link>
+      <button className="border border-white w-[80%] rounded-xl text-black bg-white font-bold p-1 text-xl">Log in</button>
     </form>
   </div>
   </>
