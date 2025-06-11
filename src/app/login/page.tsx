@@ -8,10 +8,12 @@ import { ChangeEvent, FormEvent, useState } from "react";
 const LoginPage = () => {
 
   const [form, setForm] = useState({email: "", password: ""});
+  const [error, setError] = useState<string>("");
   const router = useRouter();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     setForm({...form, [e.target.name]: e.target.value});
+    setError("");
   }
 
   const handleSubmit = async (e: FormEvent) => {
@@ -24,7 +26,7 @@ const LoginPage = () => {
     if (res?.ok) {
       router.push("/");
     } else {
-      alert("Failed")
+      setError("Incorrect email or password.");
     }
   }
 
@@ -42,6 +44,7 @@ const LoginPage = () => {
         <br />
         <input type="password" name="password" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
       </div>
+      {error && <p className="text-white italic">{error}</p>}
 
       <Link href="/register" className="text-white font-bold">Don't have an account?</Link>
       <button className="border border-white w-[80%] rounded-xl text-black bg-white font-bold p-1 text-xl">Log in</button>
