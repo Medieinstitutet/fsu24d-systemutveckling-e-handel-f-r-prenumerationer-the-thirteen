@@ -25,6 +25,7 @@ const LoginPage = () => {
 
     if (res?.ok) {
       router.push("/");
+      router.refresh();
     } else {
       setError("Incorrect email or password.");
     }
@@ -36,13 +37,13 @@ const LoginPage = () => {
       <div className="w-[100%] flex flex-col">
         <label className="text-white font-bold">Email</label>
         <br />
-        <input type="email" name="email" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
+        <input value={form.email} type="email" name="email" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
       </div>
 
       <div className="w-[100%] flex flex-col">
         <label className="text-white font-bold">Password</label>
         <br />
-        <input type="password" name="password" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
+        <input value={form.password} type="password" name="password" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
       </div>
       {error && <p className="text-white italic">{error}</p>}
 

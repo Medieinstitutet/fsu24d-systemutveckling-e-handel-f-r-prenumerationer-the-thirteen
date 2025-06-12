@@ -14,8 +14,8 @@ const ContentSchema = new Schema<IContent>({
     body: { type: String, required: true },
     accessLevel: {
         type: String, 
-        enum: ['basic', 'pro', 'premium'], 
-        default: 'basic',
+        enum: ['free', 'basic', 'pro', 'premium'], 
+        default: 'free',
     },
     imageUrl: { type: String, required: false},
     createdAt: { type: Date, default: Date.now }, 
