@@ -9,6 +9,8 @@ import { useRouter } from "next/navigation";
 const RegisterPage = () => {
   const [form, setForm] = useState({email: "", password: "", subscriptionLevel: "free"});
   const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
+  const [success, setSuccess] = useState<boolean>(false);
   const router = useRouter();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -18,6 +20,7 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setLoading(true);
 
     try {
       await axios.post("/api/register", form);
@@ -28,11 +31,12 @@ const RegisterPage = () => {
       })
 
       if (response?.ok) {
+        setSuccess(true);
         router.push("/");
+        router.refresh();
       } else {
         setError("Login failed after registration.");
       }
-      setError("");
     } catch (error: any) {
       const errorMessage = error?.response?.data?.error;
       if (errorMessage === "User already exists") {
@@ -49,19 +53,21 @@ const RegisterPage = () => {
       <div className="w-[100%] flex flex-col">
         <label className="text-white font-bold">Email</label>
         <br />
-        <input type="email" name="email" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
+        <input value={form.email} type="email" name="email" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
       </div>
 
       <div className="w-[100%] flex flex-col">
         <label className="text-white font-bold">Password</label>
         <br />
-        <input type="password" name="password" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
+        <input value={form.password} type="password" name="password" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
       </div>
 
       {error && <p className="text-white italic">{error}</p>}
 
       <Link href="/login" className="text-white font-bold">Have an account already?</Link>
-      <button className="border border-white w-[80%] rounded-xl text-black bg-white font-bold text-xl p-1">Get started!</button>
+      {!loading && <button className="border border-white w-[80%] rounded-xl text-black bg-white font-bold text-xl p-1">Get started!</button>}
+      {loading && !success && <h3 className="text-white">Registering...</h3>}
+      {success && <h3 className="text-white">Success!</h3>}
     </form>
   </div>
   </>
