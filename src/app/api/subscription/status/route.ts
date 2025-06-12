@@ -180,6 +180,7 @@ export async function GET(): Promise<NextResponse<SubscriptionStatusResponse | {
     }
     
     const response: SubscriptionStatusResponse = {
+      id: user._id.toString(), 
       email: user.email,
       level: user.subscriptionLevel,
       status: status,
