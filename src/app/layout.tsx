@@ -6,6 +6,7 @@ import { AccessLevel } from "@/types/access";
 import Link from "next/link";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import UpgradeOrLogin from "@/components/UpgradeOrLogin";
 
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -39,11 +40,7 @@ const badgeClass = {
                   {userLevel.toUpperCase()}
                 </span>
 
-                {userLevel !== 'premium' && (
-                  <Link href="/subscriptions" className="rounded bg-blue-600 px-3 py-1 hover:bg-blue-700">
-                    <p className="text-white">Uppgradera</p>
-                  </Link>
-                )}
+                <UpgradeOrLogin />
                 
                 
                 <div className="relative group">
@@ -60,14 +57,14 @@ const badgeClass = {
                         Mitt konto
                       </Link>
                       <div className="px-4 py-2 hover:bg-gray-100">
-                        
+
                         {loggedIn ? (
                        <LogoutButton />
-                       ) : (
-                    <Link href="/login" className="underline text-gray-600 hover:text-black">
+                ) : (
+                  <Link href="/login" className="underline text-gray-600 hover:text-black">
                     <p>Logga in</p>
-                   </Link>
-                  )}
+                  </Link>
+                )}
                 
                       </div>
                     </div>
