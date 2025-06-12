@@ -5,7 +5,29 @@ import { stripe } from '@/lib/stripe';
 import { connectDB } from '@/lib/mongoose';
 import User from '@/models/User';
 
-function mapPriceIdToLevel(priceId: string): 'free' | 'basic' | 'pro' | 'premium' {
+type SubscriptionLevel = 'free' | 'basic' | 'pro' | 'premium';
+type SubscriptionStatus = 'active' | 'canceled' | 'past_due' | 'unpaid';
+
+interface StripeDetails {
+  status: string;
+  cancelAtPeriodEnd: boolean;
+  currentPeriodStart: Date;
+  currentPeriodEnd: Date;
+  cancelAt: Date | null;
+}
+
+interface SubscriptionStatusResponse {
+  email: string;
+  level: SubscriptionLevel;
+  status: string;
+  startDate: Date | undefined;
+  endDate: Date | undefined;
+  stripeCustomerId: string | undefined;
+  stripeSubscriptionId: string | undefined;
+  stripeDetails: StripeDetails;
+}
+
+function mapPriceIdToLevel(priceId: string): SubscriptionLevel {
   if (priceId === process.env.STRIPE_PRICE_BASIC) {
     return "basic";
   } else if (priceId === process.env.STRIPE_PRICE_PRO) {
@@ -16,9 +38,8 @@ function mapPriceIdToLevel(priceId: string): 'free' | 'basic' | 'pro' | 'premium
   return "free";
 }
 
-export async function GET() {
+export async function GET(): Promise<NextResponse<SubscriptionStatusResponse | { error: string, details?: string, dbError?: string, dbErrorCode?: string }>> {
   try {
-  
     const session = await getServerSession(authOptions);
     if (!session || !session.user?.email) {
       return NextResponse.json(
@@ -26,12 +47,10 @@ export async function GET() {
         { status: 401 }
       );
     }
-
     
     try {
       await connectDB();
     } catch (dbError: any) {
-      console.error('DB anslutningsfel i status endpoint:', dbError.message);
       return NextResponse.json(
         { 
           error: 'Kunde inte hämta prenumerationsstatus på grund av databasfel', 
@@ -41,8 +60,7 @@ export async function GET() {
         { status: 503 } 
       );
     }
-
-    
+ 
     const user = await User.findOne({ email: session.user.email });
     if (!user) {
       return NextResponse.json(
@@ -50,43 +68,30 @@ export async function GET() {
         { status: 404 }
       );
     }
-
-    console.log(`Hämtar prenumerationsstatus för användare: ${user.email}`);
     
-    
-    let stripeDetails: any = {...(user.stripeDetails || {})};
-    let status = user.subscriptionStatus || "free";
-    let subscriptionLevel = user.subscriptionLevel;
+    let stripeDetails: StripeDetails = {...(user.stripeDetails || {})} as StripeDetails;
+    let status: SubscriptionStatus = (user.subscriptionStatus as SubscriptionStatus) || "active"; 
+    let subscriptionLevel: SubscriptionLevel = user.subscriptionLevel;
     let subscriptionUpdated = false;
     
     if (user.stripeSubscriptionId && user.subscriptionLevel === "free" && status === "active") {
-      console.log(`Användare ${user.email} har en aktiv prenumeration men är markerad som "free". Försöker korrigera...`);
-      
       try {
-
         const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
         
         if (subscription.items?.data?.length > 0) {
           const priceId = subscription.items.data[0].price.id;
           subscriptionLevel = mapPriceIdToLevel(priceId);
           
-          console.log(`Korrigerar prenumerationsnivå för ${user.email} från "free" till "${subscriptionLevel}" baserat på priceId: ${priceId}`);
-          
-     
           user.subscriptionLevel = subscriptionLevel;
           await user.save();
           subscriptionUpdated = true;
-          
-          console.log(`Prenumerationsnivå för ${user.email} har uppdaterats till ${subscriptionLevel}`);
         }
       } catch (stripeError: any) {
-        console.error(`Fel vid hämtning av prenumerationsdetaljer för korrigering:`, stripeError.message);
       }
     }
    
     if (user.stripeSubscriptionId) {
       try {
-        console.log(`Hämtar Stripe-prenumeration med ID: ${user.stripeSubscriptionId}`);
         const subscription = await stripe.subscriptions.retrieve(user.stripeSubscriptionId);
         
         const currentPeriodStart = 
@@ -99,17 +104,9 @@ export async function GET() {
           ? new Date(subscription.items.data[0].current_period_end * 1000)
           : new Date(subscription.current_period_end * 1000);
         
-        console.log(`Prenumerationsstatus: ${subscription.status}, cancel_at_period_end: ${subscription.cancel_at_period_end}`);
-        console.log(`Period: ${currentPeriodStart} till ${currentPeriodEnd}`);
-        
-        
         const cancelAtDate = subscription.cancel_at 
           ? new Date(subscription.cancel_at * 1000) 
           : null;
-          
-        if (cancelAtDate) {
-          console.log(`Prenumeration avbryts: ${cancelAtDate}`);
-        }
         
         stripeDetails = {
           status: subscription.status,
@@ -119,22 +116,18 @@ export async function GET() {
           cancelAt: cancelAtDate
         };
         
-        
         user.stripeDetails = stripeDetails;
-        
         
         if (subscription.cancel_at_period_end) {
           status = "canceled";
           
           user.subscriptionEndDate = currentPeriodEnd;
         } else {
-          
           if (["active", "past_due", "unpaid"].includes(subscription.status)) {
-            status = subscription.status;
+            status = subscription.status as SubscriptionStatus;
           }
         }
         
-    
         if (!user.subscriptionStartDate) {
           user.subscriptionStartDate = currentPeriodStart;
         }
@@ -145,58 +138,48 @@ export async function GET() {
             subscriptionLevel = mapPriceIdToLevel(priceId);
             
             if (subscriptionLevel !== "free") {
-              console.log(`Uppdaterar prenumerationsnivå för ${user.email} från "free" till "${subscriptionLevel}"`);
               user.subscriptionLevel = subscriptionLevel;
             }
           }
         }
         
         await user.save();
-        console.log(`Uppdaterade användarens prenumerationsuppgifter i databasen`);
         
       } catch (stripeError: any) {
-        console.error("Fel vid hämtning av Stripe-prenumeration:", stripeError.message);
       }
     }
     
-   
     if (status !== user.subscriptionStatus) {
-      console.log(`Uppdaterar status från ${user.subscriptionStatus} till ${status}`);
-      user.subscriptionStatus = status;
-      try {
-        await user.save();
-      } catch (saveError: any) {
-        console.error("Kunde inte spara användarens statusuppdatering:", saveError.message);
+      if (["active", "canceled", "past_due", "unpaid"].includes(status)) {
+        user.subscriptionStatus = status;
+        try {
+          await user.save();
+        } catch (saveError: any) {
+        }
       }
     }
     
-   
     if ((!stripeDetails.currentPeriodEnd || !stripeDetails.currentPeriodStart) && user.stripeDetails) {
       stripeDetails = {
         ...stripeDetails,
-        currentPeriodStart: user.stripeDetails.currentPeriodStart || user.subscriptionStartDate,
-        currentPeriodEnd: user.stripeDetails.currentPeriodEnd || user.subscriptionEndDate
+        currentPeriodStart: user.stripeDetails.currentPeriodStart || user.subscriptionStartDate || new Date(),
+        currentPeriodEnd: user.stripeDetails.currentPeriodEnd || user.subscriptionEndDate || new Date()
       };
     }
     
-   
     if (!stripeDetails.currentPeriodStart) {
       stripeDetails.currentPeriodStart = user.subscriptionStartDate || new Date();
     }
     
     if (!stripeDetails.currentPeriodEnd) {
-      stripeDetails.currentPeriodEnd = user.subscriptionEndDate;
-      
-     
-      if (!stripeDetails.currentPeriodEnd) {
+      stripeDetails.currentPeriodEnd = user.subscriptionEndDate || (() => {
         const estimatedEnd = new Date(stripeDetails.currentPeriodStart);
         estimatedEnd.setDate(estimatedEnd.getDate() + 30);
-        stripeDetails.currentPeriodEnd = estimatedEnd;
-      }
+        return estimatedEnd;
+      })();
     }
     
-   
-    const response = {
+    const response: SubscriptionStatusResponse = {
       email: user.email,
       level: user.subscriptionLevel,
       status: status,
@@ -207,11 +190,9 @@ export async function GET() {
       stripeDetails: stripeDetails
     };
     
-    console.log(`Returnerar prenumerationsdata: ${JSON.stringify(response)}`);
     return NextResponse.json(response);
     
   } catch (error: any) {
-    console.error("Fel vid hämtning av prenumerationsstatus:", error.message);
     return NextResponse.json(
       { 
         error: "Det gick inte att hämta prenumerationsstatus",

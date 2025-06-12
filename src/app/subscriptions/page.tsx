@@ -2,6 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { startSubscription } from "@/services/stripe-service";
+import { useRouter } from "next/navigation";
 
 import { subscriptionLevels } from "@/lib/data";
 
@@ -9,10 +10,13 @@ import SubscriptionCard from "@/components/SubscriptionCard";
 
 export default function SubscriptionCards() {
   const { data: session } = useSession();
-  console.log("SESSION", session);
+  const router = useRouter();
 
   const handleSubscribe = async (level: string) => {
-    if (!session?.user?.email) return alert("Du måste vara inloggad");
+    if (!session?.user?.email) {
+      router.push("/login");
+      return;
+    }
 
     const url = await startSubscription(session.user.email, level);
     window.location.href = url;
