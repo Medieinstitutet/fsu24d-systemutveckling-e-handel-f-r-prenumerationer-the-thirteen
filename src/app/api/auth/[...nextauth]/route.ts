@@ -40,11 +40,22 @@ export const authOptions: NextAuthOptions = {
 
   callbacks: {
     async jwt({ token, user }) {
+      await connectDB();
+
       if (user) {
         token.id = user.id;
         token.subscriptionLevel = user.subscriptionLevel;
         token.role = user.role;
       }
+
+      if (token.id) {
+        const dbUser = await User.findById(token.id);
+        if (dbUser) {
+          token.subscriptionLevel = dbUser.subscriptionLevel;
+          token.role = dbUser.role;
+        }
+      }
+
       return token;
     },
 
