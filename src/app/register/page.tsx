@@ -58,15 +58,6 @@ const RegisterPage = () => {
         <input type="password" name="password" required className="h-[4dvh] text-black bg-white p-2" onChange={handleChange}/>
       </div>
 
-      <div className="w-[100%] flex flex-col">
-        <label className="text-white font-bold">Subscription tier</label>
-        <select name="subscriptionLevel" className="bg-white p-2 font-bold" onChange={handleChange}>
-          <option value="free" className="font-bold">Free</option>
-          <option value="basic" className="font-bold">Basic</option>
-          <option value="pro" className="font-bold">Pro</option>
-          <option value="premium" className="font-bold">Premium</option>
-        </select>
-      </div>
       {error && <p className="text-white italic">{error}</p>}
 
       <Link href="/login" className="text-white font-bold">Have an account already?</Link>
