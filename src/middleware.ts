@@ -15,11 +15,19 @@ export async function middleware(request: NextRequest) {
     if (token && token.role !== "admin") {
       return NextResponse.redirect(new URL('/', request.url))
     }
-  }
+  };
+
+  if (token && request.nextUrl.pathname === '/login' || token && request.nextUrl.pathname === '/register') {
+    return NextResponse.redirect(new URL('/', request.url));
+  };
 
   return NextResponse.next()
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
+  matcher: [
+    '/admin/:path*',
+    '/login',
+    '/register'
+  ],
 }
