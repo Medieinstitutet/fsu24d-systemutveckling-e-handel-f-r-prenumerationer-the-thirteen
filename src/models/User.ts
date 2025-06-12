@@ -7,12 +7,12 @@ export interface IUser extends Document {
   subscriptionLevel: "free" | "basic" | "pro" | "premium";
   role: "customer" | "admin";
   subscriptionStatus?: "active" | "canceled" | "past_due" | "unpaid";
-  subscriptionStartDate?: Date; // Nytt fält för startdatumet
+  subscriptionStartDate?: Date;
   subscriptionEndDate?: Date;
   stripeCustomerId?: string;
   stripeSubscriptionId?: string;
   stripeDetails?: {
-    // Nytt fält för detaljerad Stripe-information
+
     status?: string;
     cancelAtPeriodEnd?: boolean;
     currentPeriodStart?: Date;
@@ -39,12 +39,11 @@ const UserSchema: Schema<IUser> = new Schema({
     type: String,
     enum: ["active", "canceled", "past_due", "unpaid"],
   },
-  subscriptionStartDate: { type: Date }, // Nytt fält
+  subscriptionStartDate: { type: Date }, 
   subscriptionEndDate: { type: Date },
   stripeCustomerId: { type: String },
   stripeSubscriptionId: { type: String },
   stripeDetails: {
-    // Nytt fält för att lagra mer detaljerad information från Stripe
     status: { type: String },
     cancelAtPeriodEnd: { type: Boolean },
     currentPeriodStart: { type: Date },
